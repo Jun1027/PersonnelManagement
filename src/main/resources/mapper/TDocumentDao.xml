@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jun.dao.TDocumentDao">
+
+    <resultMap type="jun.entity.TDocument" id="TDocumentMap">
+        <result property="dId" column="d_id" jdbcType="INTEGER"/>
+        <result property="dTitle" column="d_title" jdbcType="VARCHAR"/>
+        <result property="dSrc" column="d_src" jdbcType="VARCHAR"/>
+        <result property="dDesc" column="d_desc" jdbcType="VARCHAR"/>
+        <result property="dTime" column="d_time" jdbcType="TIMESTAMP"/>
+        <result property="dUid" column="d_uid" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TDocumentMap">
+        select
+          d_id, d_title, d_src, d_desc, d_time, d_uid
+        from db_personnelmanagement.t_document
+        where d_id = #{dId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TDocumentMap">
+        select
+          d_id, d_title, d_src, d_desc, d_time, d_uid
+        from db_personnelmanagement.t_document
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TDocumentMap">
+        select
+          d_id, d_title, d_src, d_desc, d_time, d_uid
+        from db_personnelmanagement.t_document
+        <where>
+            <if test="dId != null">
+                and d_id = #{dId}
+            </if>
+            <if test="dTitle != null and dTitle != ''">
+                and d_title = #{dTitle}
+            </if>
+            <if test="dSrc != null and dSrc != ''">
+                and d_src = #{dSrc}
+            </if>
+            <if test="dDesc != null and dDesc != ''">
+                and d_desc = #{dDesc}
+            </if>
+            <if test="dTime != null">
+                and d_time = #{dTime}
+            </if>
+            <if test="dUid != null">
+                and d_uid = #{dUid}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="dId" useGeneratedKeys="true">
+        insert into db_personnelmanagement.t_document(d_title, d_src, d_desc, d_time, d_uid)
+        values (#{dTitle}, #{dSrc}, #{dDesc}, #{dTime}, #{dUid})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update db_personnelmanagement.t_document
+        <set>
+            <if test="dTitle != null and dTitle != ''">
+                d_title = #{dTitle},
+            </if>
+            <if test="dSrc != null and dSrc != ''">
+                d_src = #{dSrc},
+            </if>
+            <if test="dDesc != null and dDesc != ''">
+                d_desc = #{dDesc},
+            </if>
+            <if test="dTime != null">
+                d_time = #{dTime},
+            </if>
+            <if test="dUid != null">
+                d_uid = #{dUid},
+            </if>
+        </set>
+        where d_id = #{dId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from db_personnelmanagement.t_document where d_id = #{dId}
+    </delete>
+
+</mapper>

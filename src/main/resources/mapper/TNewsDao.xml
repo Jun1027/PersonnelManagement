@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jun.dao.TNewsDao">
+
+    <resultMap type="jun.entity.TNews" id="TNewsMap">
+        <result property="nId" column="n_id" jdbcType="INTEGER"/>
+        <result property="nTitle" column="n_title" jdbcType="VARCHAR"/>
+        <result property="nContent" column="n_content" jdbcType="VARCHAR"/>
+        <result property="nDesc" column="n_desc" jdbcType="VARCHAR"/>
+        <result property="nTime" column="n_time" jdbcType="TIMESTAMP"/>
+        <result property="nUid" column="n_uid" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TNewsMap">
+        select
+          n_id, n_title, n_content, n_desc, n_time, n_uid
+        from db_personnelmanagement.t_news
+        where n_id = #{nId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TNewsMap">
+        select
+          n_id, n_title, n_content, n_desc, n_time, n_uid
+        from db_personnelmanagement.t_news
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TNewsMap">
+        select
+          n_id, n_title, n_content, n_desc, n_time, n_uid
+        from db_personnelmanagement.t_news
+        <where>
+            <if test="nId != null">
+                and n_id = #{nId}
+            </if>
+            <if test="nTitle != null and nTitle != ''">
+                and n_title = #{nTitle}
+            </if>
+            <if test="nContent != null and nContent != ''">
+                and n_content = #{nContent}
+            </if>
+            <if test="nDesc != null and nDesc != ''">
+                and n_desc = #{nDesc}
+            </if>
+            <if test="nTime != null">
+                and n_time = #{nTime}
+            </if>
+            <if test="nUid != null">
+                and n_uid = #{nUid}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="nId" useGeneratedKeys="true">
+        insert into db_personnelmanagement.t_news(n_title, n_content, n_desc, n_time, n_uid)
+        values (#{nTitle}, #{nContent}, #{nDesc}, #{nTime}, #{nUid})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update db_personnelmanagement.t_news
+        <set>
+            <if test="nTitle != null and nTitle != ''">
+                n_title = #{nTitle},
+            </if>
+            <if test="nContent != null and nContent != ''">
+                n_content = #{nContent},
+            </if>
+            <if test="nDesc != null and nDesc != ''">
+                n_desc = #{nDesc},
+            </if>
+            <if test="nTime != null">
+                n_time = #{nTime},
+            </if>
+            <if test="nUid != null">
+                n_uid = #{nUid},
+            </if>
+        </set>
+        where n_id = #{nId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from db_personnelmanagement.t_news where n_id = #{nId}
+    </delete>
+
+</mapper>
