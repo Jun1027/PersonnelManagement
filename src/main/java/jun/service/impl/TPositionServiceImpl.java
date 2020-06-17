@@ -1,5 +1,6 @@
 package jun.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import jun.entity.TPosition;
 import jun.dao.TPositionDao;
 import jun.service.TPositionService;
@@ -42,16 +43,31 @@ public class TPositionServiceImpl implements TPositionService {
         return this.tPositionDao.queryAllByLimit(offset, limit);
     }
 
+    @Override
+    public List<TPosition> queryAll(int pageNum, int pageSize, TPosition tPosition) {
+        PageHelper.startPage(pageNum,pageSize);
+        return this.tPositionDao.queryAll(tPosition);
+    }
+
+    @Override
+    public List<TPosition> queryAll(TPosition tPosition) {
+        return this.tPositionDao.queryAll(tPosition);
+    }
+
+    @Override
+    public int selectStaffNum(int[] ids) {
+        return this.tPositionDao.selectStaffNum(ids);
+    }
+
     /**
      * 新增数据
      *
      * @param tPosition 实例对象
-     * @return 实例对象
+     * @return 影响行数
      */
     @Override
-    public TPosition insert(TPosition tPosition) {
-        this.tPositionDao.insert(tPosition);
-        return tPosition;
+    public int insert(TPosition tPosition) {
+        return this.tPositionDao.insert(tPosition);
     }
 
     /**
@@ -61,9 +77,8 @@ public class TPositionServiceImpl implements TPositionService {
      * @return 实例对象
      */
     @Override
-    public TPosition update(TPosition tPosition) {
-        this.tPositionDao.update(tPosition);
-        return this.queryById(tPosition.getPId());
+    public int update(TPosition tPosition) {
+        return this.tPositionDao.update(tPosition);
     }
 
     /**
@@ -75,5 +90,10 @@ public class TPositionServiceImpl implements TPositionService {
     @Override
     public boolean deleteById(Integer pId) {
         return this.tPositionDao.deleteById(pId) > 0;
+    }
+
+    @Override
+    public int deleteBatch(int[] ids) {
+        return this.tPositionDao.deleteBatch(ids);
     }
 }

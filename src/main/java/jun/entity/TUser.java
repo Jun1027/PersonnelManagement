@@ -1,5 +1,7 @@
 package jun.entity;
 
+import lombok.Data;
+
 import java.util.Date;
 import java.io.Serializable;
 
@@ -9,6 +11,7 @@ import java.io.Serializable;
  * @author makejava
  * @since 2020-05-15 11:04:05
  */
+@Data
 public class TUser implements Serializable {
     private static final long serialVersionUID = -85171416115983321L;
     
@@ -24,53 +27,7 @@ public class TUser implements Serializable {
     
     private Integer uSid;
 
+    private String uSname;
 
-    public Integer getUId() {
-        return uId;
-    }
-
-    public void setUId(Integer uId) {
-        this.uId = uId;
-    }
-
-    public String getUName() {
-        return uName;
-    }
-
-    public void setUName(String uName) {
-        this.uName = uName;
-    }
-
-    public String getUAccount() {
-        return uAccount;
-    }
-
-    public void setUAccount(String uAccount) {
-        this.uAccount = uAccount;
-    }
-
-    public String getUPwd() {
-        return uPwd;
-    }
-
-    public void setUPwd(String uPwd) {
-        this.uPwd = uPwd;
-    }
-
-    public Date getUTime() {
-        return uTime;
-    }
-
-    public void setUTime(Date uTime) {
-        this.uTime = uTime;
-    }
-
-    public Integer getUSid() {
-        return uSid;
-    }
-
-    public void setUSid(Integer uSid) {
-        this.uSid = uSid;
-    }
 
 }

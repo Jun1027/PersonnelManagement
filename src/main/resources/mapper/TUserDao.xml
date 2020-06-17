@@ -9,20 +9,25 @@
         <result property="uPwd" column="u_pwd" jdbcType="VARCHAR"/>
         <result property="uTime" column="u_time" jdbcType="TIMESTAMP"/>
         <result property="uSid" column="u_sid" jdbcType="INTEGER"/>
+        <result property="uSname" column="s_name" jdbcType="VARCHAR"/>
     </resultMap>
+
+    <sql id="sql">
+        u_id, u_name, u_account, u_pwd, u_time, u_sid
+    </sql>
 
     <!--查询单个-->
     <select id="queryById" resultMap="TUserMap">
         select
           u_id, u_name, u_account, u_pwd, u_time, u_sid
         from db_personnelmanagement.t_user
-        where u_id = #{uId}
+        where u_id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="TUserMap">
         select
-          u_id, u_name, u_account, u_pwd, u_time, u_sid
+        <include refid="sql"></include>
         from db_personnelmanagement.t_user
         limit #{offset}, #{limit}
     </select>
@@ -30,17 +35,19 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="TUserMap">
         select
-          u_id, u_name, u_account, u_pwd, u_time, u_sid
+        <include refid="sql"></include>
+        ,s_name
         from db_personnelmanagement.t_user
+        join db_personnelmanagement.t_status on t_user.u_sid = t_status.s_id
         <where>
             <if test="uId != null">
-                and u_id = #{uId}
+                and u_id = #{id}
             </if>
             <if test="uName != null and uName != ''">
-                and u_name = #{uName}
+                and u_name like concat('%',#{uName},'%')
             </if>
             <if test="uAccount != null and uAccount != ''">
-                and u_account = #{uAccount}
+                and u_account like concat('%',#{uAccount},'%')
             </if>
             <if test="uPwd != null and uPwd != ''">
                 and u_pwd = #{uPwd}
@@ -57,7 +64,18 @@
     <!--新增所有列-->
     <insert id="insert" keyProperty="uId" useGeneratedKeys="true">
         insert into db_personnelmanagement.t_user(u_name, u_account, u_pwd, u_time, u_sid)
-        values (#{uName}, #{uAccount}, #{uPwd}, #{uTime}, #{uSid})
+        values (#{uName}, #{uAccount}, #{uPwd}, curdate(), #{uSid})
+    </insert>
+    <insert id="insertRole">
+        insert into db_personnelmanagement.t_role(r_name, r_remark)
+        values (#{account}, #{name})
+    </insert>
+    <select id="selectRoleId" resultType="int">
+        select r_id from t_role where r_name = #{account}
+    </select>
+    <insert id="insertUserRole">
+        insert into db_personnelmanagement.t_userrole(user_id, role_id)
+        values (#{uid}, #{rid})
     </insert>
 
     <!--通过主键修改数据-->
@@ -85,8 +103,40 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from db_personnelmanagement.t_user where u_id = #{uId}
+        delete from db_personnelmanagement.t_user where u_id = #{id}
     </delete>
+
+    <!--通过主键批量删除-->
+    <delete id="deleteBatch">
+        delete from db_personnelmanagement.t_user where u_id in
+        <foreach collection="array" item="id" index="indes" open ="(" separator="," close=")">
+        #{id}
+        </foreach>
+    </delete>
+    <!--通过角色id删除角色-->
+    <delete id="deleteRole">
+        delete from t_role where r_id = #{rid}
+    </delete>
+    <!--通过角色id删除用户角色-->
+    <delete id="deleteUserRole">
+        delete from t_userrole where role_id = #{rid}
+    </delete>
+
+    <!--根据用户id查询是否发布过公告-->
+    <select id="selectNewsNum" resultType="int">
+        select count(n_id) from t_news where n_uid in
+        <foreach collection="array" item="id" index="indes" open ="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <!--根据用户id查询是否发布过公告-->
+    <select id="selectDocumentNum" resultType="int">
+        select count(d_id) from t_document where d_uid in
+        <foreach collection="array" item="id" index="indes" open ="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
 
     <!--登录-->
     <select id="login" resultType="jun.entity.TUser">
@@ -95,5 +145,47 @@
         from db_personnelmanagement.t_user
         where u_account = #{uAccount}
         and u_pwd = #{uPwd}
+    </select>
+
+    <!--根据账号查用户-->
+    <select id="selectByName" resultType="jun.entity.TUser">
+        select
+          u_id, u_name, u_account, u_pwd, u_time, u_sid
+        from db_personnelmanagement.t_user
+        where u_account = #{uAccount}
+    </select>
+
+
+
+    <!--根据账号查角色集合-->
+    <select id="selectRoleName" resultType="String">
+        select r_name from t_role
+            where r_id in(
+                select role_id from t_userrole
+                    where user_id = (
+                        select u_id from t_user where u_account = #{uAccount}
+                    )
+            )
+    </select>
+
+
+    <!--根据账号查权限集合-->
+    <select id="selectPermissionName" resultType="String">
+        select p_name from t_permission
+        join t_roleperms on t_permission.p_id = t_roleperms.permission_id
+        join t_role on t_roleperms.role_id = t_role.r_id
+        join t_userrole on t_role.r_id = t_userrole.role_id
+        join t_user on t_userrole.user_id = t_user.u_id
+        where u_account = #{uAccount}
+    </select>
+    <!--查询用户所有权限-->
+    <select id="selectUserPermissions" resultType="jun.entity.TPermission">
+        select p_id,p_name,p_remark from t_permission where p_id in (
+        select permission_id from t_roleperms where role_id = (
+        select role_id from t_userrole where user_id = (
+            select u_id from t_user where u_account = #{uAccount}
+                )
+            )
+        )
     </select>
 </mapper>

@@ -1,8 +1,10 @@
 package jun.dao;
 
+import jun.entity.TPermission;
 import jun.entity.TUser;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
+import java.util.Set;
 
 /**
  * (TUser)表数据库访问层
@@ -10,57 +12,7 @@ import java.util.List;
  * @author makejava
  * @since 2020-05-15 11:04:05
  */
-public interface TUserDao {
-
-    /**
-     * 通过ID查询单条数据
-     *
-     * @param uId 主键
-     * @return 实例对象
-     */
-    TUser queryById(Integer uId);
-
-    /**
-     * 查询指定行数据
-     *
-     * @param offset 查询起始位置
-     * @param limit 查询条数
-     * @return 对象列表
-     */
-    List<TUser> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
-
-
-    /**
-     * 通过实体作为筛选条件查询
-     *
-     * @param tUser 实例对象
-     * @return 对象列表
-     */
-    List<TUser> queryAll(TUser tUser);
-
-    /**
-     * 新增数据
-     *
-     * @param tUser 实例对象
-     * @return 影响行数
-     */
-    int insert(TUser tUser);
-
-    /**
-     * 修改数据
-     *
-     * @param tUser 实例对象
-     * @return 影响行数
-     */
-    int update(TUser tUser);
-
-    /**
-     * 通过主键删除数据
-     *
-     * @param uId 主键
-     * @return 影响行数
-     */
-    int deleteById(Integer uId);
+public interface TUserDao extends Dao<TUser>{
 
     /**
      * 登录
@@ -70,5 +22,81 @@ public interface TUserDao {
      * @return 用户信息
      */
     TUser login(@Param("uAccount") String uAccount,@Param("uPwd") String uPwd);
+
+    /**
+     * 通过账号查询
+     * @param uAccount
+     * @return
+     */
+    TUser selectByName(@Param("uAccount") String uAccount);
+
+    /**
+     * 根据账号查询用户角色集合
+     * @param uAccount
+     * @return
+     */
+    Set<String> selectRoleName(String uAccount);
+
+    /**
+     * 根据账号查询用户权限集合
+     * @param uAccount
+     * @return
+     */
+    Set<String> selectPermissionName(String uAccount);
+
+    /**
+     * 查询用户所有权限
+     * @return
+     */
+    List<TPermission> selectUserPermissions(String uAccount);
+
+    /**
+     * 根据用户id查询是否发布过公告
+     * @param ids
+     * @return
+     */
+    int selectNewsNum(int[] ids);
+
+    /**
+     * 根据用户id查询是否上传过文档
+     * @param ids
+     * @return
+     */
+    int selectDocumentNum(int[] ids);
+
+
+    //添加角色及绑定
+    /**
+     * 新增数据
+     *
+     * @return 影响行数
+     */
+    int insertRole(@Param("account") String account,@Param("name") String name);
+    /**
+     * 查询角色id
+     *
+     * @return 影响行数
+     */
+    int selectRoleId(@Param("account") String account);
+    /**
+     * 新增数据
+     *
+     * @return 影响行数
+     */
+    int insertUserRole(@Param("uid") int uid,@Param("rid") int rid);
+
+    /**
+     * 删除角色
+     * @param rid
+     * @return
+     */
+    int deleteRole(int rid);
+
+    /**
+     * 删除用户角色
+     * @param rid
+     * @return
+     */
+    int deleteUserRole(int rid);
 
 }

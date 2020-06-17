@@ -1,5 +1,7 @@
 package jun.entity;
 
+import lombok.Data;
+
 import java.util.Date;
 import java.io.Serializable;
 
@@ -9,6 +11,7 @@ import java.io.Serializable;
  * @author makejava
  * @since 2020-05-15 11:32:34
  */
+@Data
 public class TNews implements Serializable {
     private static final long serialVersionUID = -45663106753009902L;
     
@@ -24,53 +27,10 @@ public class TNews implements Serializable {
     
     private Integer nUid;
 
+    private String uName;
 
-    public Integer getNId() {
-        return nId;
-    }
+    private TUser user;
 
-    public void setNId(Integer nId) {
-        this.nId = nId;
-    }
 
-    public String getNTitle() {
-        return nTitle;
-    }
-
-    public void setNTitle(String nTitle) {
-        this.nTitle = nTitle;
-    }
-
-    public String getNContent() {
-        return nContent;
-    }
-
-    public void setNContent(String nContent) {
-        this.nContent = nContent;
-    }
-
-    public String getNDesc() {
-        return nDesc;
-    }
-
-    public void setNDesc(String nDesc) {
-        this.nDesc = nDesc;
-    }
-
-    public Date getNTime() {
-        return nTime;
-    }
-
-    public void setNTime(Date nTime) {
-        this.nTime = nTime;
-    }
-
-    public Integer getNUid() {
-        return nUid;
-    }
-
-    public void setNUid(Integer nUid) {
-        this.nUid = nUid;
-    }
 
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jun.dao.PowerModifyDao">
+    <!--根据账号查用户-->
+    <select id="selectByAccount" resultType="Integer">
+        select role_id from t_userrole
+        where user_id = (select u_id from t_user where u_account=#{account})
+    </select>
+
+    <!--查询所有权限-->
+    <select id="selectPermissions" resultType="jun.entity.TPermission">
+        select p_id,p_name,p_remark from t_permission
+    </select>
+
+    <!--根据角色id查询用户拥有的权限-->
+    <select id="selectMyselfPermission" resultType="Integer">
+        select permission_id from t_roleperms
+        where role_id = #{rid}
+    </select>
+
+    <!--通过角色id清空权限-->
+    <delete id="removePermission">
+        delete from t_roleperms where role_id = #{rid}
+    </delete>
+
+    <!--添加权限-->
+    <insert id="addPermission">
+        insert into t_roleperms(role_id, permission_id)
+        values (#{rid}, #{pid})
+    </insert>
+
+</mapper>

@@ -13,7 +13,7 @@
         select
           d_id, d_name, d_info
         from db_personnelmanagement.t_dept
-        where d_id = #{dId}
+        where d_id = #{id}
     </select>
 
     <!--查询指定行数据-->
@@ -31,10 +31,10 @@
         from db_personnelmanagement.t_dept
         <where>
             <if test="dId != null">
-                and d_id = #{dId}
+                and d_id = #{id}
             </if>
             <if test="dName != null and dName != ''">
-                and d_name = #{dName}
+                and d_name like concat('%',#{dName},'%')
             </if>
             <if test="dInfo != null and dInfo != ''">
                 and d_info = #{dInfo}
@@ -64,7 +64,22 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from db_personnelmanagement.t_dept where d_id = #{dId}
+        delete from db_personnelmanagement.t_dept where d_id = #{id}
     </delete>
+
+    <!--通过主键批量删除-->
+    <delete id="deleteBatch">
+        delete from db_personnelmanagement.t_dept where d_id in
+        <foreach collection="array" item="id" index="indes" open ="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!--根据部门id查询该部门下是否有员工-->
+    <select id="selectStaffNum" resultType="int">
+        select count(s_id) from t_staff where s_did in
+        <foreach collection="array" item="id" index="indes" open ="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
 </mapper>

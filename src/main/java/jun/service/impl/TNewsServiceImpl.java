@@ -1,5 +1,6 @@
 package jun.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import jun.entity.TNews;
 import jun.dao.TNewsDao;
 import jun.service.TNewsService;
@@ -43,15 +44,24 @@ public class TNewsServiceImpl implements TNewsService {
     }
 
     /**
+     * 查询多条数据
+     *
+     * @return 对象列表
+     */
+    @Override
+    public List<TNews> queryAll(int pageNum,int pageSize,TNews tNews) {
+        PageHelper.startPage(pageNum,pageSize);
+        return this.tNewsDao.queryAll(tNews);
+    }
+    /**
      * 新增数据
      *
      * @param tNews 实例对象
-     * @return 实例对象
+     * @return 影响行数
      */
     @Override
-    public TNews insert(TNews tNews) {
-        this.tNewsDao.insert(tNews);
-        return tNews;
+    public int insert(TNews tNews) {
+        return this.tNewsDao.insert(tNews);
     }
 
     /**
@@ -61,9 +71,8 @@ public class TNewsServiceImpl implements TNewsService {
      * @return 实例对象
      */
     @Override
-    public TNews update(TNews tNews) {
-        this.tNewsDao.update(tNews);
-        return this.queryById(tNews.getNId());
+    public int update(TNews tNews) {
+        return this.tNewsDao.update(tNews);
     }
 
     /**
@@ -75,5 +84,10 @@ public class TNewsServiceImpl implements TNewsService {
     @Override
     public boolean deleteById(Integer nId) {
         return this.tNewsDao.deleteById(nId) > 0;
+    }
+
+    @Override
+    public int deleteBatch(int[] ids) {
+        return this.tNewsDao.deleteBatch(ids);
     }
 }

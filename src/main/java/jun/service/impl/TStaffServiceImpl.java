@@ -1,5 +1,6 @@
 package jun.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import jun.entity.TStaff;
 import jun.dao.TStaffDao;
 import jun.service.TStaffService;
@@ -42,16 +43,22 @@ public class TStaffServiceImpl implements TStaffService {
         return this.tStaffDao.queryAllByLimit(offset, limit);
     }
 
+    @Override
+    public List<TStaff> queryAll(int pageNum, int pageSize, TStaff tStaff) {
+        PageHelper.startPage(pageNum,pageSize);
+        return this.tStaffDao.queryAll(tStaff);
+    }
+
     /**
      * 新增数据
      *
      * @param tStaff 实例对象
-     * @return 实例对象
+     * @return 影响行数
      */
     @Override
-    public TStaff insert(TStaff tStaff) {
-        this.tStaffDao.insert(tStaff);
-        return tStaff;
+    public int insert(TStaff tStaff) {
+        return this.tStaffDao.insert(tStaff);
+
     }
 
     /**
@@ -61,9 +68,8 @@ public class TStaffServiceImpl implements TStaffService {
      * @return 实例对象
      */
     @Override
-    public TStaff update(TStaff tStaff) {
-        this.tStaffDao.update(tStaff);
-        return this.queryById(tStaff.getSId());
+    public int update(TStaff tStaff) {
+        return this.tStaffDao.update(tStaff);
     }
 
     /**
@@ -75,5 +81,10 @@ public class TStaffServiceImpl implements TStaffService {
     @Override
     public boolean deleteById(Integer sId) {
         return this.tStaffDao.deleteById(sId) > 0;
+    }
+
+    @Override
+    public int deleteBatch(int[] ids) {
+        return this.tStaffDao.deleteBatch(ids);
     }
 }

@@ -1,5 +1,7 @@
 package jun.entity;
 
+import lombok.Data;
+
 import java.util.Date;
 import java.io.Serializable;
 
@@ -9,6 +11,7 @@ import java.io.Serializable;
  * @author makejava
  * @since 2020-05-14 18:31:11
  */
+@Data
 public class TStaff implements Serializable {
     private static final long serialVersionUID = -91386761304711037L;
     
@@ -20,7 +23,7 @@ public class TStaff implements Serializable {
     
     private String sPhonenumber;
     
-    private String sEmal;
+    private String sEmail;
     
     private String sEducation;
     
@@ -29,98 +32,18 @@ public class TStaff implements Serializable {
     private String sAddress;
     
     private Date sTime;
-    
+
     private Integer sPid;
-    
+
     private Integer sDid;
 
+    private String pName;
 
-    public Integer getSId() {
-        return sId;
-    }
+    private String dName;
 
-    public void setSId(Integer sId) {
-        this.sId = sId;
-    }
+    private TPosition Position;
 
-    public String getSName() {
-        return sName;
-    }
+    private TDept Dept;
 
-    public void setSName(String sName) {
-        this.sName = sName;
-    }
-
-    public String getSSex() {
-        return sSex;
-    }
-
-    public void setSSex(String sSex) {
-        this.sSex = sSex;
-    }
-
-    public String getSPhonenumber() {
-        return sPhonenumber;
-    }
-
-    public void setSPhonenumber(String sPhonenumber) {
-        this.sPhonenumber = sPhonenumber;
-    }
-
-    public String getSEmal() {
-        return sEmal;
-    }
-
-    public void setSEmal(String sEmal) {
-        this.sEmal = sEmal;
-    }
-
-    public String getSEducation() {
-        return sEducation;
-    }
-
-    public void setSEducation(String sEducation) {
-        this.sEducation = sEducation;
-    }
-
-    public String getSIdno() {
-        return sIdno;
-    }
-
-    public void setSIdno(String sIdno) {
-        this.sIdno = sIdno;
-    }
-
-    public String getSAddress() {
-        return sAddress;
-    }
-
-    public void setSAddress(String sAddress) {
-        this.sAddress = sAddress;
-    }
-
-    public Date getSTime() {
-        return sTime;
-    }
-
-    public void setSTime(Date sTime) {
-        this.sTime = sTime;
-    }
-
-    public Integer getSPid() {
-        return sPid;
-    }
-
-    public void setSPid(Integer sPid) {
-        this.sPid = sPid;
-    }
-
-    public Integer getSDid() {
-        return sDid;
-    }
-
-    public void setSDid(Integer sDid) {
-        this.sDid = sDid;
-    }
 
 }

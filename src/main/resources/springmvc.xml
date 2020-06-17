@@ -9,4 +9,23 @@
     <context:component-scan base-package="jun.controller"></context:component-scan>
     <!--启用注解映射-->
     <mvc:annotation-driven></mvc:annotation-driven>
+    <!--处理静态资源-->
+    <mvc:default-servlet-handler />
+    <!--视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/jsp/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+    <!--用shiro注解-->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+    <mvc:interceptors>
+        <bean class="jun.commons.LogInterceptor"></bean>
+    </mvc:interceptors>
+
+    <!--上传文件的封装类-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"></bean>
 </beans>

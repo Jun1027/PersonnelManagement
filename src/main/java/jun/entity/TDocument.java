@@ -1,5 +1,7 @@
 package jun.entity;
 
+import lombok.Data;
+
 import java.util.Date;
 import java.io.Serializable;
 
@@ -9,6 +11,7 @@ import java.io.Serializable;
  * @author makejava
  * @since 2020-05-15 11:32:43
  */
+@Data
 public class TDocument implements Serializable {
     private static final long serialVersionUID = -90914780411031845L;
     
@@ -24,53 +27,12 @@ public class TDocument implements Serializable {
     
     private Integer dUid;
 
+    private String uName;
 
-    public Integer getDId() {
-        return dId;
-    }
+    private TUser user;
 
-    public void setDId(Integer dId) {
-        this.dId = dId;
-    }
+    private String dSize;
 
-    public String getDTitle() {
-        return dTitle;
-    }
-
-    public void setDTitle(String dTitle) {
-        this.dTitle = dTitle;
-    }
-
-    public String getDSrc() {
-        return dSrc;
-    }
-
-    public void setDSrc(String dSrc) {
-        this.dSrc = dSrc;
-    }
-
-    public String getDDesc() {
-        return dDesc;
-    }
-
-    public void setDDesc(String dDesc) {
-        this.dDesc = dDesc;
-    }
-
-    public Date getDTime() {
-        return dTime;
-    }
-
-    public void setDTime(Date dTime) {
-        this.dTime = dTime;
-    }
-
-    public Integer getDUid() {
-        return dUid;
-    }
-
-    public void setDUid(Integer dUid) {
-        this.dUid = dUid;
-    }
+    private String dSuffix;
 
 }

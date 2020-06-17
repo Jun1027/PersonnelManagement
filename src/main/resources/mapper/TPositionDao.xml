@@ -13,7 +13,7 @@
         select
           p_id, p_name, p_info
         from db_personnelmanagement.t_position
-        where p_id = #{pId}
+        where p_id = #{id}
     </select>
 
     <!--查询指定行数据-->
@@ -31,10 +31,10 @@
         from db_personnelmanagement.t_position
         <where>
             <if test="pId != null">
-                and p_id = #{pId}
+                and p_id = #{id}
             </if>
             <if test="pName != null and pName != ''">
-                and p_name = #{pName}
+                and p_name like concat('%',#{pName},'%')
             </if>
             <if test="pInfo != null and pInfo != ''">
                 and p_info = #{pInfo}
@@ -64,7 +64,22 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from db_personnelmanagement.t_position where p_id = #{pId}
+        delete from db_personnelmanagement.t_position where p_id = #{id}
     </delete>
+
+    <!--通过主键批量删除-->
+    <delete id="deleteBatch">
+        delete from db_personnelmanagement.t_position where p_id in
+        <foreach collection="array" item="id" index="indes" open ="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <!--根据职位id查询该职位下是否有员工-->
+    <select id="selectStaffNum" resultType="int">
+        select count(s_id) from t_staff where s_pid in
+        <foreach collection="array" item="id" index="indes" open ="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
 </mapper>

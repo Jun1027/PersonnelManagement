@@ -2,13 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="jun.dao.TNewsDao">
 
-    <resultMap type="jun.entity.TNews" id="TNewsMap">
+    <resultMap type="jun.entity.TNews" id="TNewsMap" autoMapping="true">
         <result property="nId" column="n_id" jdbcType="INTEGER"/>
         <result property="nTitle" column="n_title" jdbcType="VARCHAR"/>
         <result property="nContent" column="n_content" jdbcType="VARCHAR"/>
         <result property="nDesc" column="n_desc" jdbcType="VARCHAR"/>
         <result property="nTime" column="n_time" jdbcType="TIMESTAMP"/>
         <result property="nUid" column="n_uid" jdbcType="INTEGER"/>
+        <association property="user" javaType="jun.entity.TUser" autoMapping="true"></association>
     </resultMap>
 
     <!--查询单个-->
@@ -16,7 +17,7 @@
         select
           n_id, n_title, n_content, n_desc, n_time, n_uid
         from db_personnelmanagement.t_news
-        where n_id = #{nId}
+        where n_id = #{id}
     </select>
 
     <!--查询指定行数据-->
@@ -30,14 +31,16 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="TNewsMap">
         select
-          n_id, n_title, n_content, n_desc, n_time, n_uid
-        from db_personnelmanagement.t_news
+        n_id, n_title, n_content, n_desc, n_time, n_uid
+        ,u_id,u_name,u_account,u_pwd,u_sid
+        from t_news
+        join t_user tu on t_news.n_uid = tu.u_id
         <where>
             <if test="nId != null">
-                and n_id = #{nId}
+                and n_id = #{id}
             </if>
             <if test="nTitle != null and nTitle != ''">
-                and n_title = #{nTitle}
+                and n_title like concat('%',#{nTitle},'%')
             </if>
             <if test="nContent != null and nContent != ''">
                 and n_content = #{nContent}
@@ -57,7 +60,7 @@
     <!--新增所有列-->
     <insert id="insert" keyProperty="nId" useGeneratedKeys="true">
         insert into db_personnelmanagement.t_news(n_title, n_content, n_desc, n_time, n_uid)
-        values (#{nTitle}, #{nContent}, #{nDesc}, #{nTime}, #{nUid})
+        values (#{nTitle}, #{nContent}, #{nDesc}, curdate(), #{nUid})
     </insert>
 
     <!--通过主键修改数据-->
@@ -85,7 +88,14 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from db_personnelmanagement.t_news where n_id = #{nId}
+        delete from db_personnelmanagement.t_news where n_id = #{id}
     </delete>
 
+    <!--通过主键批量删除-->
+    <delete id="deleteBatch">
+        delete from db_personnelmanagement.t_news where n_id in
+        <foreach collection="array" item="id" index="indes" open ="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

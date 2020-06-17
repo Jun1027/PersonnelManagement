@@ -1,5 +1,6 @@
 package jun.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import jun.entity.TDocument;
 import jun.dao.TDocumentDao;
 import jun.service.TDocumentService;
@@ -43,15 +44,25 @@ public class TDocumentServiceImpl implements TDocumentService {
     }
 
     /**
+     * 查询多条数据
+     *
+     * @return 对象列表
+     */
+    @Override
+    public List<TDocument> queryAll(int pageNum,int pageSize,TDocument tDocument) {
+        PageHelper.startPage(pageNum,pageSize);
+        return this.tDocumentDao.queryAll(tDocument);
+    }
+
+    /**
      * 新增数据
      *
      * @param tDocument 实例对象
-     * @return 实例对象
+     * @return 影响行数
      */
     @Override
-    public TDocument insert(TDocument tDocument) {
-        this.tDocumentDao.insert(tDocument);
-        return tDocument;
+    public int insert(TDocument tDocument) {
+        return this.tDocumentDao.insert(tDocument);
     }
 
     /**
@@ -61,9 +72,8 @@ public class TDocumentServiceImpl implements TDocumentService {
      * @return 实例对象
      */
     @Override
-    public TDocument update(TDocument tDocument) {
-        this.tDocumentDao.update(tDocument);
-        return this.queryById(tDocument.getDId());
+    public int update(TDocument tDocument) {
+        return this.tDocumentDao.update(tDocument);
     }
 
     /**
@@ -75,5 +85,10 @@ public class TDocumentServiceImpl implements TDocumentService {
     @Override
     public boolean deleteById(Integer dId) {
         return this.tDocumentDao.deleteById(dId) > 0;
+    }
+
+    @Override
+    public int deleteBatch(int[] ids) {
+        return this.tDocumentDao.deleteBatch(ids);
     }
 }

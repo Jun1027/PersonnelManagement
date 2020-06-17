@@ -2,32 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="jun.dao.TStaffDao">
 
-    <resultMap type="jun.entity.TStaff" id="TStaffMap">
+    <resultMap type="jun.entity.TStaff" id="TStaffMap" autoMapping="true">
         <result property="sId" column="s_id" jdbcType="INTEGER"/>
         <result property="sName" column="s_name" jdbcType="VARCHAR"/>
         <result property="sSex" column="s_sex" jdbcType="VARCHAR"/>
         <result property="sPhonenumber" column="s_phonenumber" jdbcType="VARCHAR"/>
-        <result property="sEmal" column="s_emal" jdbcType="VARCHAR"/>
+        <result property="sEmail" column="s_email" jdbcType="VARCHAR"/>
         <result property="sEducation" column="s_education" jdbcType="VARCHAR"/>
         <result property="sIdno" column="s_idno" jdbcType="VARCHAR"/>
         <result property="sAddress" column="s_address" jdbcType="VARCHAR"/>
         <result property="sTime" column="s_time" jdbcType="TIMESTAMP"/>
         <result property="sPid" column="s_pid" jdbcType="INTEGER"/>
         <result property="sDid" column="s_did" jdbcType="INTEGER"/>
+        <association property="Dept" javaType="jun.entity.TDept" autoMapping="true"></association>
+        <association property="Position" javaType="jun.entity.TPosition" autoMapping="true"></association>
+        <!--<association property="Position" javaType="jun.been.TPosition" autoMapping="true">
+        </association>
+        <association property="Dept" javaType="jun.been.TDept" autoMapping="true">
+        </association>-->
     </resultMap>
 
     <!--查询单个-->
     <select id="queryById" resultMap="TStaffMap">
         select
-          s_id, s_name, s_sex, s_phonenumber, s_emal, s_education, s_idno, s_address, s_time, s_pid, s_did
+          s_id, s_name, s_sex, s_phonenumber, s_email, s_education, s_idno, s_address, s_time, s_pid, s_did
         from db_personnelmanagement.t_staff
-        where s_id = #{sId}
+        where s_id = #{id}
     </select>
 
     <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="TStaffMap">
+    <select id="queryAllBy Limit" resultMap="TStaffMap">
         select
-          s_id, s_name, s_sex, s_phonenumber, s_emal, s_education, s_idno, s_address, s_time, s_pid, s_did
+          s_id, s_name, s_sex, s_phonenumber, s_email, s_education, s_idno, s_address, s_time, s_pid, s_did
         from db_personnelmanagement.t_staff
         limit #{offset}, #{limit}
     </select>
@@ -35,29 +41,33 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="TStaffMap">
         select
-          s_id, s_name, s_sex, s_phonenumber, s_emal, s_education, s_idno, s_address, s_time, s_pid, s_did
-        from db_personnelmanagement.t_staff
+          s_id, s_name, s_sex, s_phonenumber, s_email, s_education, s_idno, s_address, s_time, s_pid, s_did
+        ,d_id,d_name,d_info
+        ,p_id,p_name,p_info
+        from t_staff
+        join t_dept on t_staff.s_did = t_dept.d_id
+        join t_position on t_staff.s_pid = t_position.p_id
         <where>
             <if test="sId != null">
-                and s_id = #{sId}
+                and s_id = #{id}
             </if>
             <if test="sName != null and sName != ''">
-                and s_name = #{sName}
+                and s_name like concat('%',#{sName},'%')
             </if>
             <if test="sSex != null and sSex != ''">
                 and s_sex = #{sSex}
             </if>
             <if test="sPhonenumber != null and sPhonenumber != ''">
-                and s_phonenumber = #{sPhonenumber}
+                and s_phonenumber like concat('%',#{sPhonenumber},'%')
             </if>
-            <if test="sEmal != null and sEmal != ''">
-                and s_emal = #{sEmal}
+            <if test="sEmail != null and sEmail != ''">
+                and s_email like concat('%',#{sEmail},'%')
             </if>
             <if test="sEducation != null and sEducation != ''">
                 and s_education = #{sEducation}
             </if>
             <if test="sIdno != null and sIdno != ''">
-                and s_idno = #{sIdno}
+                and s_idno like concat('%',#{sIdno},'%')
             </if>
             <if test="sAddress != null and sAddress != ''">
                 and s_address = #{sAddress}
@@ -76,8 +86,8 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="sId" useGeneratedKeys="true">
-        insert into db_personnelmanagement.t_staff(s_name, s_sex, s_phonenumber, s_emal, s_education, s_idno, s_address, s_time, s_pid, s_did)
-        values (#{sName}, #{sSex}, #{sPhonenumber}, #{sEmal}, #{sEducation}, #{sIdno}, #{sAddress}, #{sTime}, #{sPid}, #{sDid})
+        insert into db_personnelmanagement.t_staff(s_name, s_sex, s_phonenumber, s_email, s_education, s_idno, s_address, s_time, s_pid, s_did)
+        values (#{sName}, #{sSex}, #{sPhonenumber}, #{sEmail}, #{sEducation}, #{sIdno}, #{sAddress}, curdate(), #{sPid}, #{sDid})
     </insert>
 
     <!--通过主键修改数据-->
@@ -93,8 +103,8 @@
             <if test="sPhonenumber != null and sPhonenumber != ''">
                 s_phonenumber = #{sPhonenumber},
             </if>
-            <if test="sEmal != null and sEmal != ''">
-                s_emal = #{sEmal},
+            <if test="sEmail != null and sEmail != ''">
+                s_email = #{sEmail},
             </if>
             <if test="sEducation != null and sEducation != ''">
                 s_education = #{sEducation},
@@ -120,7 +130,15 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from db_personnelmanagement.t_staff where s_id = #{sId}
+        delete from db_personnelmanagement.t_staff where s_id = #{id}
+    </delete>
+
+    <!--通过主键批量删除-->
+    <delete id="deleteBatch">
+        delete from db_personnelmanagement.t_staff where s_id in
+        <foreach collection="array" item="id" index="indes" open ="(" separator="," close=")">
+            #{id}
+        </foreach>
     </delete>
 
 </mapper>

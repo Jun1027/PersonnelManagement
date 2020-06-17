@@ -1,5 +1,6 @@
 package jun.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import jun.entity.TDept;
 import jun.dao.TDeptDao;
 import jun.service.TDeptService;
@@ -42,16 +43,32 @@ public class TDeptServiceImpl implements TDeptService {
         return this.tDeptDao.queryAllByLimit(offset, limit);
     }
 
+    @Override
+    public List<TDept> queryAll(int pageNum, int pageSize, TDept tDept) {
+        PageHelper.startPage(pageNum,pageSize);
+        return this.tDeptDao.queryAll(tDept);
+    }
+
+    @Override
+    public List<TDept> queryAll(TDept tDept) {
+        return this.tDeptDao.queryAll(tDept);
+    }
+
+    @Override
+    public int selectStaffNum(int[] ids) {
+        return this.tDeptDao.selectStaffNum(ids);
+    }
+
+
     /**
      * 新增数据
      *
      * @param tDept 实例对象
-     * @return 实例对象
+     * @return 影响行数
      */
     @Override
-    public TDept insert(TDept tDept) {
-        this.tDeptDao.insert(tDept);
-        return tDept;
+    public int insert(TDept tDept) {
+        return this.tDeptDao.insert(tDept);
     }
 
     /**
@@ -61,9 +78,8 @@ public class TDeptServiceImpl implements TDeptService {
      * @return 实例对象
      */
     @Override
-    public TDept update(TDept tDept) {
-        this.tDeptDao.update(tDept);
-        return this.queryById(tDept.getDId());
+    public int update(TDept tDept) {
+        return this.tDeptDao.update(tDept);
     }
 
     /**
@@ -75,5 +91,10 @@ public class TDeptServiceImpl implements TDeptService {
     @Override
     public boolean deleteById(Integer dId) {
         return this.tDeptDao.deleteById(dId) > 0;
+    }
+
+    @Override
+    public int deleteBatch(int[] ids) {
+        return this.tDeptDao.deleteBatch(ids);
     }
 }

@@ -1,5 +1,7 @@
 package jun.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +10,7 @@ import java.io.Serializable;
  * @author makejava
  * @since 2020-05-15 11:32:24
  */
+@Data
 public class TPosition implements Serializable {
     private static final long serialVersionUID = -39080905460122705L;
     
@@ -17,29 +20,5 @@ public class TPosition implements Serializable {
     
     private String pInfo;
 
-
-    public Integer getPId() {
-        return pId;
-    }
-
-    public void setPId(Integer pId) {
-        this.pId = pId;
-    }
-
-    public String getPName() {
-        return pName;
-    }
-
-    public void setPName(String pName) {
-        this.pName = pName;
-    }
-
-    public String getPInfo() {
-        return pInfo;
-    }
-
-    public void setPInfo(String pInfo) {
-        this.pInfo = pInfo;
-    }
 
 }
